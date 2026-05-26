@@ -1,0 +1,206 @@
+{
+    "id": null,
+    "uid": "board-slo-dashboard",
+    "title": "SLO Dashboard",
+    "timezone": "browser",
+    "schemaVersion": 38,
+    "version": 1,
+    "refresh": "5s",
+    "panels": [
+        {
+            "type": "stat",
+            "title": "GET ≤ 200ms (SLO 99%)",
+            "gridPos": {
+                "x": 0,
+                "y": 0,
+                "w": 6,
+                "h": 5
+            },
+            "targets": [
+                {
+                    "expr": "sum(request_duration_seconds_bucket{method=\"GET\",le=\"0.3\"}) / sum(request_duration_seconds_count{method=\"GET\"})",
+                    "refId": "A"
+                }
+            ],
+            "options": {
+                "reduceOptions": {
+                    "calcs": [
+                        "last"
+                    ],
+                    "values": false
+                },
+                "orientation": "horizontal"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "percentunit",
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "red",
+                                "value": null
+                            },
+                            {
+                                "color": "orange",
+                                "value": 0.99
+                            },
+                            {
+                                "color": "green",
+                                "value": 0.995
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "type": "stat",
+            "title": "POST ≤ 500ms (SLO 99%)",
+            "gridPos": {
+                "x": 6,
+                "y": 0,
+                "w": 6,
+                "h": 5
+            },
+            "targets": [
+                {
+                    "expr": "sum(request_duration_seconds_bucket{method=\"POST\",le=\"0.5\"}) / sum(request_duration_seconds_count{method=\"POST\"})",
+                    "refId": "A"
+                }
+            ],
+            "options": {
+                "reduceOptions": {
+                    "calcs": [
+                        "last"
+                    ],
+                    "values": false
+                }
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "percentunit",
+                    "thresholds": {
+                        "steps": [
+                            {
+                                "color": "red",
+                                "value": null
+                            },
+                            {
+                                "color": "orange",
+                                "value": 0.99
+                            },
+                            {
+                                "color": "green",
+                                "value": 0.995
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "type": "timeseries",
+            "title": "HTTP Average Latency (GET / POST)",
+            "gridPos": {
+                "x": 0,
+                "y": 5,
+                "w": 12,
+                "h": 6
+            },
+            "targets": [
+                {
+                    "expr": "request_duration_seconds_sum / request_duration_seconds_count",
+                    "legendFormat": "{{method}} {{route}}",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "s"
+                }
+            }
+        },
+        {
+            "type": "stat",
+            "title": "HTTP Error Rate",
+            "gridPos": {
+                "x": 0,
+                "y": 11,
+                "w": 6,
+                "h": 5
+            },
+            "targets": [
+                {
+                    "expr": "sum(http_request_errors_total) / sum(request_duration_seconds_count)",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "percentunit",
+                    "thresholds": {
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "orange",
+                                "value": 0.01
+                            },
+                            {
+                                "color": "red",
+                                "value": 0.02
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "type": "timeseries",
+            "title": "DB Query Avg Latency",
+            "gridPos": {
+                "x": 6,
+                "y": 11,
+                "w": 6,
+                "h": 5
+            },
+            "targets": [
+                {
+                    "expr": "db_query_duration_seconds_sum / db_query_duration_seconds_count",
+                    "legendFormat": "{{query}}",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "s"
+                }
+            }
+        },
+        {
+            "type": "timeseries",
+            "title": "DB Query P99 Latency",
+            "gridPos": {
+                "x": 0,
+                "y": 16,
+                "w": 12,
+                "h": 6
+            },
+            "targets": [
+                {
+                    "expr": "histogram_quantile(0.99, sum by (le, query)(db_query_duration_seconds_bucket))",
+                    "legendFormat": "{{query}}",
+                    "refId": "A"
+                }
+            ],
+            "fieldConfig": {
+                "defaults": {
+                    "unit": "s"
+                }
+            }
+        }
+    ]
+}
