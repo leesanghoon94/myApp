@@ -2,10 +2,10 @@ apiVersion: v1
 entries:
   myapp:
   - apiVersion: v2
-    created: "2026-07-21T17:56:56.792873+09:00"
+    created: "2026-07-21T18:44:27.872633+09:00"
     digest: 66a430138cb91468697644fdd11b5fcdcb64f09d0d577d52f4f8124400746a76
     name: myapp
     urls:
-    - myapp-0.1.0.tgz
+    - https://leesanghoon94.github.io/myApp/myapp-0.1.0.tgz
     version: 0.1.0
-generated: "2026-07-21T17:56:56.79231+09:00"
+generated: "2026-07-21T18:44:27.869355+09:00"
