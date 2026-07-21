@@ -12,5 +12,5 @@ export function readAll() {
 }
 
 export function readOne(id) {
-  return () => fetch(`/api/article${id}`).then((res) => res.json());
+  return () => fetch(`/api/article/${id}`).then((res) => res.json());
 }

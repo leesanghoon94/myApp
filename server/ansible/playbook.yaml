@@ -6,7 +6,7 @@
   tasks:
     - name: Copy files
       ansible.builtin.copy:
-        src: /var/lib/jenkins/workspace/backend/my/server
+        src: /var/lib/jenkins/workspace/backend/myApp/server
         dest: /home/ec2-user/
 
     - name: node install

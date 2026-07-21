@@ -19,7 +19,7 @@ pipeline {
         stage('git clone') {
             steps {
                 sh """
-                   git clone 'https://github.com/leesanghoon94/my.git'
+                   git clone 'https://github.com/leesanghoon94/myApp.git'
                    """
             }
         }
@@ -27,7 +27,7 @@ pipeline {
         stage('deploy') {
             steps {
                 sh  """
-                    cd my/server/ansible
+                    cd myApp/server/ansible
                     ansible-playbook -i inventory playbook.yaml
                     """
             }

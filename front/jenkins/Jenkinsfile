@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('git check') {
             steps {
-                git branch: 'main', credentialsId: 'github-token', url: 'https://github.com/leesanghoon94/my'
+                git branch: 'main', credentialsId: 'github-token', url: 'https://github.com/leesanghoon94/myApp'
             }
         }
         
@@ -31,7 +31,7 @@ pipeline {
         stage ('npm') {
             steps {
                 sh  """
-                    cd my/frontend
+                    cd myApp/frontend
                     npm install
                     npm run build
                     """
@@ -41,7 +41,7 @@ pipeline {
         stage ('deploy ansible') {
             steps {
                 sh  """
-                    cd my/frontend/ansible
+                    cd myApp/frontend/ansible
                     ansible-playbook -i inventory playbook.yaml
                     """
             }
