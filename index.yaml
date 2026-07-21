@@ -1,0 +1,18 @@
+apiVersion: v1
+entries:
+  myapp:
+  - apiVersion: v2
+    created: "2026-07-21T22:39:16.717821+09:00"
+    digest: e2fb666fcae899e5fcd8875a28b36ecfc3ee29991780c16d7bacf15535b658c7
+    name: myapp
+    urls:
+    - https://leesanghoon94.github.io/myApp/myapp-0.1.0.tgz
+    version: 0.1.0
+  - apiVersion: v2
+    created: "2026-07-21T22:39:16.71825+09:00"
+    digest: 66a430138cb91468697644fdd11b5fcdcb64f09d0d577d52f4f8124400746a76
+    name: myapp
+    urls:
+    - https://leesanghoon94.github.io/myApp/myapp/myapp-0.1.0.tgz
+    version: 0.1.0
+generated: "2026-07-21T22:39:16.716767+09:00"
