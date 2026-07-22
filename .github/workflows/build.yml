@@ -3,8 +3,10 @@
 
 name: Node.js CI
 
-on: workflow_dispatch
-
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
 # env: ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true
 
 jobs:
@@ -12,7 +14,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: print working directory
-        run: pwd
+      - run: |
+          pwd
+          ls -la
   job1:
     runs-on: ubuntu-latest
     steps:
