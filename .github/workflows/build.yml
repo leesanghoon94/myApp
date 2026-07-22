@@ -3,12 +3,10 @@
 
 name: test
 
-on:
-   workflow_dispatch:
-  # push:
-  #   branches: [main]
-# env: ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true
+on: workflow_dispatch
 
+jobs:
+  
   build:
     runs-on: ubuntu-latest
 
