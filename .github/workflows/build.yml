@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: print working directory
         run: pwd
-        run: ls -la
+        
   build:
     runs-on: ubuntu-latest
 
