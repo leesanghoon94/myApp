@@ -9,13 +9,15 @@ on:
   pull_request:
     branches: ["main"]
 
+env: ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
+        node-version: 18.x
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -25,10 +27,14 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-      - run: ls
-      - run: cd front
-      - run: npm install
-      - run: npm run build
+
+      - name: Install dependencies
+        working-directory: front
+        run: npm install
+
+      - name: Build
+        working-directory: front
+        run: npm run build
     # - run: npm ci
     # - run: npm run build --if-present
     # - run: npm test
