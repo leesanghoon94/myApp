@@ -6,30 +6,95 @@ name: test
 on: workflow_dispatch
 
 jobs:
-  
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version }}
+      
+      - name: checkout source code
         uses: actions/setup-node@v4
-        
-      - name: Build front
+
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v6.1.0
+        with:
+          aws-region: ap-northeast-2
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      
+      - name: Get image tag(version)
+              id: image
+              run: |
+                VERSION=$(echo ${{ github.sha }} | cut -c1-5)
+                echo VERSION=$VERSION
+                echo "::set-output name=version::$VERSION"
+      - name: build,tag,and push image to docker hub
+        id: image-info
+        env:
+          IMAGE_TAG: ${{ steps.image.outputs.version }}
+          DOCKERID: leesanghoon94
         working-directory: front
-        run: | 
+        run: |
           npm install
           npm run build
+          echo "::set-output name=image_tag::$IMAGE_TAG"
+          docker build -t leesanghoon94/front-eks:$IMAGE_TAG . 
+          docker push leesanghoon94/front-eks:$IMAGE_TAG
 
-      - name: Build server
+      - name: build,tag,and push image to docker hub
+        id: image-info
+        env:
+          IMAGE_TAG: ${{ steps.image.outputs.version }}
+          DOCKERID: leesanghoon94
         working-directory: server
         run: |
           npm install
-          
-        
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+          echo "::set-output name=image_tag::$IMAGE_TAG"
+          docker build -t leesanghoon94/server-eks:$IMAGE_TAG . 
+          docker push leesanghoon94/server-eks:$IMAGE_TAG
+
+
+    outputs:
+      image_tag: ${{ steps.image.outputs.version }}
+      sha: ${{ github.sha }}
+  deploy:
+    needs: build
+    name: apply docker image tag to frontend deployment manifest
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_TAG: ${{ needs.build.outputs.image_tag }}
+      GIT_ACCESS_TOKEN: ${{ secrets.ACTION_TOKEN }}
+      HASH: ${{ needs.build.outputs.sha }}
+      GIT_REPO: leesanghoon94/myApp
+    
+    steps:
+      - name: Clone Deploy repository
+        uses: actions/checkout@v2
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
+          repository: ${{ env.GIT_REPO }}
+          ref: 'main'
+          token: ${{ env.GIT_ACCESS_TOKEN }}
+
+      - name: Image Tag Change
+        uses: mikefarah/yq@v4.9.6
+        with:
+          cmd: yq e --inplace '.image.tag = "${{ env.IMAGE_TAG }}"' myapp/values.yaml
+          
+
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v3
+        with:
+          cmd: |
+            helm lint .
+            helm package .
+            helm index . https://leesanghoon94/myApp
+
+          token: ${{ env.GIT_ACCESS_TOKEN }}
+          commit-message: 'deploy: myapp-${{ env.HASH }}'
+          base: main
+          branch: gh-pages-${{ env.HASH }}
+          title: 'deploy: myapp-${{ env.HASH }}'
+          
+          labels: |
+            automerge
