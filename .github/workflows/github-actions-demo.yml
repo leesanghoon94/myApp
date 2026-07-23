@@ -36,6 +36,5 @@ jobs:
           echo $VERSION
 
     outputs:
-      image_tag:
-        image_tag: ${{ steps.image.outputs.version }}
-        sha: ${{ github.sha }}
+      image_tag: ${{ steps.image.outputs.version }}
+      sha: ${{ github.sha }}
