@@ -23,11 +23,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       
       - name: Get image tag(version)
-              id: image
-              run: |
-                VERSION=$(echo ${{ github.sha }} | cut -c1-5)
-                echo VERSION=$VERSION
-                echo "::set-output name=version::$VERSION"
+          id: image
+          run: |
+            VERSION=$(echo ${{ github.sha }} | cut -c1-5)
+            echo VERSION=$VERSION
+            echo "::set-output name=version::$VERSION"
+            
       - name: build,tag,and push image to docker hub
         id: image-info
         env:
