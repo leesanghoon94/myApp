@@ -35,7 +35,7 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo $VERSION
 
-  outputs:
-    image_tag:
-      image_tag: ${{ steps.image.outputs.version }}
-      sha: ${{ github.sha }}
+    outputs:
+      image_tag:
+        image_tag: ${{ steps.image.outputs.version }}
+        sha: ${{ github.sha }}
