@@ -8,10 +8,7 @@ on: workflow_dispatch
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v6.1.0
         with:
@@ -20,66 +17,59 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Check out repository code
-              uses: actions/checkout@v6
-      
+        uses: actions/checkout@v6
+
       - name: Get image tag(version)
-<<<<<<< HEAD
-          id: image
-          run: |
-            VERSION=$(echo ${{ github.sha }} | cut -c1-5)
-            echo VERSION=$VERSION
-            echo "::set-output name=version::$VERSION"
-            
-=======
         id: image
         run: |
           VERSION=$(echo ${{ github.sha }} | cut -c1-5)
           echo VERSION=$VERSION
           echo "::set-output name=version::$VERSION"
-      
->>>>>>> ffa7cc4 (build.yml 수정)
+
       - name: build,tag,and push image to docker hub
-        id: image-info
+        id: front_image
         env:
-          IMAGE_TAG: ${{ steps.image.outputs.version }}
+          FRONT_IMAGE: ${{ steps.image.outputs.version }}
           DOCKERID: leesanghoon94
         working-directory: front
         run: |
           npm install
           npm run build
-          echo "::set-output name=image_tag::$IMAGE_TAG"
-          docker build -t leesanghoon94/front-eks:$IMAGE_TAG . 
-          docker push leesanghoon94/front-eks:$IMAGE_TAG
+          echo "::set-output name=image_tag::$FRONT_IMAGE"
+          docker build -t leesanghoon94/front-eks:$FRONT_IMAGE . 
+          docker push leesanghoon94/front-eks:$FRONT_IMAGE
 
       - name: build,tag,and push image to docker hub
-        id: image-info
+        id: server_image
         env:
-          IMAGE_TAG: ${{ steps.image.outputs.version }}
+          SERVER_IMAGE: ${{ steps.image.outputs.version }}
           DOCKERID: leesanghoon94
         working-directory: server
         run: |
           npm install
-          echo "::set-output name=image_tag::$IMAGE_TAG"
-          docker build -t leesanghoon94/server-eks:$IMAGE_TAG . 
-          docker push leesanghoon94/server-eks:$IMAGE_TAG
+          echo "::set-output name=image_tag::$SERVER_IMAGE"
+          docker build -t leesanghoon94/server-eks:$SERVER_IMAGE . 
+          docker push leesanghoon94/server-eks:$SERVER_IMAGE
 
     outputs:
-      image_tag: ${{ steps.image.outputs.version }}
+      front_image: ${{ steps.front_image.outputs.version }}
+      server_image: ${{ steps.server_image.outputs.version }}
       sha: ${{ github.sha }}
-  
+
   deploy:
     needs: build
     name: apply docker image tag to frontend deployment manifest
     runs-on: ubuntu-latest
     env:
-      IMAGE_TAG: ${{ needs.build.outputs.image_tag }}
+      FRONT_IMAGE: ${{ needs.build.outputs.front_image }}
+      SERVER_IMAGE: ${{ needs.build.outputs.server_image }}
       GIT_ACCESS_TOKEN: ${{ secrets.ACTION_TOKEN }}
       HASH: ${{ needs.build.outputs.sha }}
       GIT_REPO: leesanghoon94/myApp
 
     steps:
       - name: Clone Deploy repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           repository: ${{ env.GIT_REPO }}
           ref: "main"
@@ -88,16 +78,16 @@ jobs:
       - name: Image Tag Change
         uses: mikefarah/yq@v4.9.6
         with:
-          cmd: yq e --inplace '.image.tag = "${{ env.IMAGE_TAG }}"' myapp/values.yaml
+          cmd: yq e --inplace '.apps.front.image.tag = "${{ env.FRONT_IMAGE }}"' myapp/values.yaml && yq e --inplace '.apps.server.image.tag = "${{ env.SERVER_IMAGE }}"' myapp/values.yaml
 
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v3
         with:
-          cmd: |
-            helm lint .
-            helm package .
-            helm index . https://leesanghoon94/myApp
+          # cmd: |
+          #   helm lint .
+          #   helm package .
+          #   helm index . https://leesanghoon94/myApp
 
           token: ${{ env.GIT_ACCESS_TOKEN }}
           commit-message: "deploy: myapp-${{ env.HASH }}"
