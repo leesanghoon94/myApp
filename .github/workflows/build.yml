@@ -90,20 +90,20 @@ jobs:
             yq e --inplace '.apps.front.image.tag = "${{ env.FRONT_IMAGE }}"' myapp/values.yaml 
             yq e --inplace '.apps.server.image.tag = "${{ env.SERVER_IMAGE }}"' myapp/values.yaml
 
-      - name: Create Pull Request
-        id: cpr
-        uses: peter-evans/create-pull-request@v3
-        with:
-          # cmd: |
-          #   helm lint .
-          #   helm package .
-          #   helm index . https://leesanghoon94/myApp
+      # - name: Create Pull Request
+      #   id: cpr
+      #   uses: peter-evans/create-pull-request@v3
+      #   with:
+      #     # cmd: |
+      #     #   helm lint .
+      #     #   helm package .
+      #     #   helm index . https://leesanghoon94/myApp
 
-          token: ${{ env.GIT_ACCESS_TOKEN }}
-          commit-message: "deploy: myapp-${{ env.HASH }}"
-          base: main
-          branch: gh-pages-${{ env.HASH }}
-          title: "deploy: myapp-${{ env.HASH }}"
+      #     token: ${{ env.GIT_ACCESS_TOKEN }}
+      #     commit-message: "deploy: myapp-${{ env.HASH }}"
+      #     base: main
+      #     branch: gh-pages-${{ env.HASH }}
+      #     title: "deploy: myapp-${{ env.HASH }}"
 
-          labels: |
-            automerge
+      #     labels: |
+      #       automerge
