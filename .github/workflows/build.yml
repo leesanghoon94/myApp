@@ -30,36 +30,37 @@ jobs:
         run: |
           VERSION=$(echo ${{ github.sha }} | cut -c1-5)
           echo VERSION=$VERSION
-          echo "::set-output name=version::$VERSION"
+          echo "front_version=$VERSION" >> "FRONT_TAG"
+          echo "server_version=$VERSION" >> "SERVER_TAG"
 
       - name: build,tag,and push image to docker hub
         id: front_image
         env:
-          FRONT_IMAGE: ${{ steps.image.outputs.version }}
+          FRONT_IMAGE: ${{ steps.image.outputs.front_version }}
           DOCKERID: leesanghoon94
         working-directory: front
         run: |
           npm install
           npm run build
-          echo "::set-output name=image_tag::$FRONT_IMAGE"
-          docker build -t leesanghoon94/front-eks:$FRONT_IMAGE . 
-          docker push leesanghoon94/front-eks:$FRONT_IMAGE
+          echo "image build and push~~~~~"
+          docker build -t $DOCKERID/front-eks:$FRONT_IMAGE . 
+          docker push $DOCKERID/front-eks:$FRONT_IMAGE
 
       - name: build,tag,and push image to docker hub
         id: server_image
         env:
-          SERVER_IMAGE: ${{ steps.image.outputs.version }}
+          SERVER_IMAGE: ${{ steps.image.outputs.server_version }}
           DOCKERID: leesanghoon94
         working-directory: server
         run: |
           npm install
-          echo "::set-output name=image_tag::$SERVER_IMAGE"
-          docker build -t leesanghoon94/server-eks:$SERVER_IMAGE . 
-          docker push leesanghoon94/server-eks:$SERVER_IMAGE
+          # echo "::set-output name=image_tag::$SERVER_IMAGE"
+          docker build -t $DOCKERID/server-eks:$SERVER_IMAGE . 
+          docker push $DOCKERID/server-eks:$SERVER_IMAGE
 
     outputs:
-      front_image: ${{ steps.front_image.outputs.version }}
-      server_image: ${{ steps.server_image.outputs.version }}
+      front_image: ${{ steps.front_image.outputs.image_tag }}
+      server_image: ${{ steps.server_image.outputs.image_tag }}
       sha: ${{ github.sha }}
 
   deploy:
@@ -84,7 +85,10 @@ jobs:
       - name: Image Tag Change
         uses: mikefarah/yq@v4.9.6
         with:
-          cmd: yq e --inplace '.apps.front.image.tag = "${{ env.FRONT_IMAGE }}"' myapp/values.yaml && yq e --inplace '.apps.server.image.tag = "${{ env.SERVER_IMAGE }}"' myapp/values.yaml
+          cmd: |
+            echo ${env.FRONT_IMAGE}
+            yq e --inplace '.apps.front.image.tag = "${{ env.FRONT_IMAGE }}"' myapp/values.yaml 
+            yq e --inplace '.apps.server.image.tag = "${{ env.SERVER_IMAGE }}"' myapp/values.yaml
 
       - name: Create Pull Request
         id: cpr
