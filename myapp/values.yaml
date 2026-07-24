@@ -16,10 +16,8 @@ apps:
         memory: 128Mi
     image:
       repository: leesanghoon94/front-eks
-
       # Overrides the image tag whose default is the latest.
-      tag: "latest"
-
+      tag: ""
   server:
     enabled: true
     autoscaling:
@@ -37,11 +35,8 @@ apps:
         memory: 128Mi
     image:
       repository: leesanghoon94/server-eks
-
       # Overrides the image tag whose default is the latest.
-      tag: "latest"
-
+      tag: ""
 mysql: true
-
 ingress:
   subnets: subnet-007271349f0e2738e, subnet-098629dccf8a81003
