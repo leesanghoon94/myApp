@@ -80,12 +80,13 @@ jobs:
           token: ${{ env.GIT_ACCESS_TOKEN }}
 
       - name: Image Tag Change
-        uses: mikefarah/yq@v4.9.6
+        uses: mikefarah/yq@master
         with:
           cmd: |
             echo $TAG
+            echo ${{ needs.build.outputs.image_tag }}
             echo ${{ steps.image.outputs.version }}
-            yq e --inplace '.apps.front.image.tag = $TAG' myapp/values.yaml 
+            yq e --inplace '.apps.front.image.tag = ${{ needs.build.outputs.image_tag }}' myapp/values.yaml 
             yq e --inplace '.apps.server.image.tag = "${{ steps.image.outputs.version }}"' myapp/values.yaml
 
       # - name: Create Pull Request

@@ -1,4 +1,4 @@
-# {{- if .Values.apps.frontend.enabled }}
+# {{- if .Values.apps.front.enabled }}
 # apiVersion: v1
 # kind: Service
 # metadata:
@@ -31,7 +31,7 @@
 #         ports:
 #         - containerPort: 80
 #         resources:
-#         {{- toYaml .Values.apps.frontend.resources | nindent 12}}
+#         {{- toYaml .Values.apps.front.resources | nindent 12}}
 # ---
 # apiVersion: v1
 # kind: Service
@@ -66,3 +66,4 @@
 #             - containerPort: 3333
 #           resources:
 #           {{- toYaml .Values.apps.server.resources | nindent 12}}
+# {{- end }}

@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
       - name: front
-        image: "{{ .Values.apps.front.image.repository}}:{{ .Values.apps.front.image.tag | default latest }}" #leesanghoon94/front-local:v0.0.7
+        image: {{ .Values.apps.front.image.repository }}:{{ .Values.apps.front.image.tag | default "latest" }} #leesanghoon94/front-local:v0.0.7
         imagePullPolicy: Always
         ports:
         - containerPort: 80
