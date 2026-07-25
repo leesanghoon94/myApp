@@ -100,8 +100,8 @@ jobs:
 
       - name: Commit and Push
         run: |
-          git config user.name=leesanghoon94
-          git config user.email=isupperhoon@gmail.com
+          git config user.name "leesanghoon94"
+          git config user.email "isupperhoon@gmail.com"
           git add myapp/values.yaml
           git commit -m "chore: update image tag to ${{ steps.image.outputs.version }}" || echo "No changes"
           git push
