@@ -9,7 +9,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: echo "브랜치이름: ${{ github.ref }} 레포이름: ${{ github.repository }} 깃헙객체: ${{ toJson(github) }}"
+      - run: |
+          echo "브랜치: ${{ github.ref }}"
+          echo "레포: ${{ github.repository }}"
+          echo '${{ toJson(github) }}'
 
       - name: Check out repository code
         uses: actions/checkout@v6
