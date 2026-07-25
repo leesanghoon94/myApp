@@ -88,21 +88,53 @@ jobs:
 
             yq e --inplace '.apps.front.image.tag = "${{ needs.build.outputs.image_tag }}"' myapp/values.yaml 
             yq e --inplace '.apps.server.image.tag = "${{ needs.build.outputs.image_tag }}"' myapp/values.yaml
+      - name: Image Tag Change
+        uses: mikefarah/yq@master
+        env:
+          TAG: ${{ steps.image.outputs.version }}
+        with:
+          cmd: |
+            yq e --inplace '.apps.front.image.tag = "'$TAG'"' myapp/values.yaml
+            yq e --inplace '.apps.server.image.tag = "'$TAG'"' myapp/values.yaml
 
-      # - name: Create Pull Request
-      #   id: cpr
-      #   uses: peter-evans/create-pull-request@v8.1.1
-      #   with:
-      #     # cmd: |
-      #     #   helm lint .
-      #     #   helm package .
-      #     #   helm index . https://leesanghoon94/myApp
+      - name: Check changed files
+        run: |
+          git diff -- myapp/values.yaml
 
-      #     token: ${{ env.GIT_ACCESS_TOKEN }}
-      #     commit-message: "deploy: myapp-${{ env.HASH }}"
-      #     base: main
-      #     branch: gh-pages-${{ env.HASH }}
-      #     title: "deploy: myapp-${{ env.HASH }}"
+      - name: Commit and Push
+        run: |
 
-      #     labels: |
-      #       automerge
+          git add myapp/values.yaml
+          git commit -m "chore: update image tag to ${{ steps.image.outputs.version }}" || echo "No changes"
+          git push
+      - name: 벨류파일이미지태그바꾸기
+        uses: mikefarah/yq@master
+        env:
+          TAG: ${{ steps.image.outputs.version }}
+        with:
+          cmd: |
+            echo "$TAG"
+
+            yq e --inplace '.apps.front.image.tag = "'$TAG'"' myapp/values.yaml
+            yq e --inplace '.apps.server.image.tag = "'$TAG'"' myapp/values.yaml
+
+            echo "===== 변경 결과 ====="
+            cat myapp/values.yaml
+
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v8.1.1
+        with:
+          # cmd: |
+          #   helm lint .
+          #   helm package .
+          #   helm index . https://leesanghoon94/myApp
+
+          token: ${{ env.GIT_ACCESS_TOKEN }}
+          commit-message: "deploy: myapp-${{ env.HASH }}"
+          base: main
+          branch: gh-pages-${{ env.HASH }}
+          title: "deploy: myapp-${{ env.HASH }}"
+
+          labels: |
+            automerge
