@@ -1,7 +1,7 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
-name: test
+name: CI
 
 on: workflow_dispatch
 
@@ -25,51 +25,48 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Get image tag(version)
+      - name: 이미지 태그
         id: image
         run: |
           VERSION=$(echo ${{ github.sha }} | cut -c1-5)
           echo VERSION=$VERSION
-          echo "front_version=$VERSION" >> "FRONT_TAG"
-          echo "server_version=$VERSION" >> "SERVER_TAG"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: build,tag,and push image to docker hub
         id: front_image
         env:
-          FRONT_IMAGE: ${{ steps.image.outputs.front_version }}
+          TAG: ${{ steps.image.outputs.version }}
           DOCKERID: leesanghoon94
         working-directory: front
         run: |
           npm install
           npm run build
           echo "image build and push~~~~~"
-          docker build -t $DOCKERID/front-eks:$FRONT_IMAGE . 
-          docker push $DOCKERID/front-eks:$FRONT_IMAGE
+          docker build -t $DOCKERID/front-eks:$TAG . 
+          docker push $DOCKERID/front-eks:$TAG
 
       - name: build,tag,and push image to docker hub
         id: server_image
         env:
-          SERVER_IMAGE: ${{ steps.image.outputs.server_version }}
+          TAG: ${{ steps.image.outputs.version }}
           DOCKERID: leesanghoon94
         working-directory: server
         run: |
           npm install
-          # echo "::set-output name=image_tag::$SERVER_IMAGE"
-          docker build -t $DOCKERID/server-eks:$SERVER_IMAGE . 
-          docker push $DOCKERID/server-eks:$SERVER_IMAGE
+          # echo "::set-output name=image_tag::$TAG"
+          docker build -t $DOCKERID/server-eks:$TAG . 
+          docker push $DOCKERID/server-eks:$TAG
 
     outputs:
-      front_image: ${{ steps.front_image.outputs.image_tag }}
-      server_image: ${{ steps.server_image.outputs.image_tag }}
+      image_tag: ${{ steps.image.outputs.version }}
       sha: ${{ github.sha }}
 
   deploy:
     needs: build
-    name: apply docker image tag to frontend deployment manifest
+    name: replace manifest image tag
     runs-on: ubuntu-latest
     env:
-      FRONT_IMAGE: ${{ needs.build.outputs.front_image }}
-      SERVER_IMAGE: ${{ needs.build.outputs.server_image }}
+      TAG: ${{ needs.build.outputs.image_tag }}
       GIT_ACCESS_TOKEN: ${{ secrets.ACTION_TOKEN }}
       HASH: ${{ needs.build.outputs.sha }}
       GIT_REPO: leesanghoon94/myApp
@@ -86,9 +83,9 @@ jobs:
         uses: mikefarah/yq@v4.9.6
         with:
           cmd: |
-            echo ${env.FRONT_IMAGE}
-            yq e --inplace '.apps.front.image.tag = "${{ env.FRONT_IMAGE }}"' myapp/values.yaml 
-            yq e --inplace '.apps.server.image.tag = "${{ env.SERVER_IMAGE }}"' myapp/values.yaml
+            echo ${env.TAG}
+            yq e --inplace '.apps.front.image.tag = "${{ env.TAG }}"' myapp/values.yaml 
+            yq e --inplace '.apps.server.image.tag = "${{ env.TAG }}"' myapp/values.yaml
 
       # - name: Create Pull Request
       #   id: cpr

@@ -30,7 +30,7 @@ jobs:
       - name: 변수 출력해봄 궁금
         id: image-info
         env:
-          IMAGE_TAG: $GITHUB_OUTPUT
+          IMAGE_TAG: ${{ steps.image.outputs.version }}
           DOCKERID: leesanghoon94
           STEP_OBJ: ${{ toJson(steps) }}
 
