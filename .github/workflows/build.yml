@@ -3,7 +3,9 @@
 
 name: CI
 
-on: workflow_dispatch
+on:
+  push:
+    branches: [main]
 
 jobs:
   build:
@@ -79,7 +81,7 @@ jobs:
           ref: "main"
           token: ${{ env.GIT_ACCESS_TOKEN }}
 
-      - name: Image Tag Change
+      - name: 벨류파일이미지태그바꾸기
         uses: mikefarah/yq@master
         with:
           cmd: |
@@ -88,47 +90,30 @@ jobs:
 
             yq e --inplace '.apps.front.image.tag = "${{ needs.build.outputs.image_tag }}"' myapp/values.yaml 
             yq e --inplace '.apps.server.image.tag = "${{ needs.build.outputs.image_tag }}"' myapp/values.yaml
-      - name: Image Tag Change
-        uses: mikefarah/yq@master
-        env:
-          TAG: ${{ steps.image.outputs.version }}
-        with:
-          cmd: |
-            yq e --inplace '.apps.front.image.tag = "'$TAG'"' myapp/values.yaml
-            yq e --inplace '.apps.server.image.tag = "'$TAG'"' myapp/values.yaml
+            echo "===== 변경 결과 ====="
+            cat myapp/values.yaml
+            cat myapp/values.yaml
 
       - name: Check changed files
         run: |
           git diff -- myapp/values.yaml
 
-      - name: Commit and Push
-        run: |
-
-          git add myapp/values.yaml
-          git commit -m "chore: update image tag to ${{ steps.image.outputs.version }}" || echo "No changes"
-          git push
-      - name: 벨류파일이미지태그바꾸기
-        uses: mikefarah/yq@master
-        env:
-          TAG: ${{ steps.image.outputs.version }}
-        with:
-          cmd: |
-            echo "$TAG"
-
-            yq e --inplace '.apps.front.image.tag = "'$TAG'"' myapp/values.yaml
-            yq e --inplace '.apps.server.image.tag = "'$TAG'"' myapp/values.yaml
-
-            echo "===== 변경 결과 ====="
-            cat myapp/values.yaml
+      # - name: Commit and Push
+      #   run: |
+      #     git config user.name=leesanghoon94
+      #     git config user.email=isupperhoon@gmail.com
+      #     git add myapp/values.yaml
+      #     git commit -m "chore: update image tag to ${{ steps.image.outputs.version }}" || echo "No changes"
+      #     git push
 
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v8.1.1
         with:
-          # cmd: |
-          #   helm lint .
-          #   helm package .
-          #   helm index . https://leesanghoon94/myApp
+          cmd: |
+            helm lint .
+            helm package .
+            helm index . https://leesanghoon94/myApp
 
           token: ${{ env.GIT_ACCESS_TOKEN }}
           commit-message: "deploy: myapp-${{ env.HASH }}"
