@@ -105,20 +105,20 @@ jobs:
       #     git commit -m "chore: update image tag to ${{ steps.image.outputs.version }}" || echo "No changes"
       #     git push
 
-      - name: Create Pull Request
-        id: cpr
-        uses: peter-evans/create-pull-request@v8.1.1
-        with:
-          cmd: |
-            helm lint .
-            helm package .
-            helm index . https://leesanghoon94/myApp
+      # - name: Create Pull Request
+      #   id: cpr
+      #   uses: peter-evans/create-pull-request@v8.1.1
+      #   with:
+      #     cmd: |
+      #       helm lint .
+      #       helm package .
+      #       helm index . https://leesanghoon94/myApp
 
-          token: ${{ env.GIT_ACCESS_TOKEN }}
-          commit-message: "deploy: myapp-${{ env.HASH }}"
-          base: main
-          branch: gh-pages-${{ env.HASH }}
-          title: "deploy: myapp-${{ env.HASH }}"
+      #     token: ${{ env.GIT_ACCESS_TOKEN }}
+      #     commit-message: "deploy: myapp-${{ env.HASH }}"
+      #     base: main
+      #     branch: gh-pages-${{ env.HASH }}
+      #     title: "deploy: myapp-${{ env.HASH }}"
 
-          labels: |
-            automerge
+      #     labels: |
+      #       automerge
