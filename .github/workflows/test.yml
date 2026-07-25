@@ -1,6 +1,6 @@
-name: GitHub Actions Demo
+name: fuck
 
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+run-name: ${{ github.actor }} is testing out GitHub Actions
 
 on: workflow_dispatch
 
@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+      - run: echo "브랜치이름: ${{ github.ref }} 레포이름: ${{ github.repository }} 깃헙객체: ${{ github }}"
 
       - name: Check out repository code
         uses: actions/checkout@v6
@@ -23,15 +23,15 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo $GITHUB_OUTPUT
 
-      - name: print image tag
+      - name: 변수 출력해봄 궁금
         id: image-info
         env:
           IMAGE_TAG: $GITHUB_OUTPUT
           DOCKERID: leesanghoon94
-          VARI: ${{ steps }}
+          STEP_OBJ: ${{ steps }}
         run: |
-          echo $VARI
-          echo $VERSION
+          echo $STEP_OBJ
+          echo $IMAGE_TAG
 
     outputs:
       image_tag: ${{ steps.image.outputs.version }}
