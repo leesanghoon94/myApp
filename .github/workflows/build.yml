@@ -83,11 +83,11 @@ jobs:
         uses: mikefarah/yq@master
         with:
           cmd: |
-            echo $TAG
+
             echo ${{ needs.build.outputs.image_tag }}
-            echo ${{ steps.image.outputs.version }}
-            yq e --inplace '.apps.front.image.tag = ${{ needs.build.outputs.image_tag }}' myapp/values.yaml 
-            yq e --inplace '.apps.server.image.tag = "${{ steps.image.outputs.version }}"' myapp/values.yaml
+
+            yq e --inplace '.apps.front.image.tag = "${{ needs.build.outputs.image_tag }}"' myapp/values.yaml 
+            yq e --inplace '.apps.server.image.tag = "${{ needs.build.outputs.image_tag }}"' myapp/values.yaml
 
       # - name: Create Pull Request
       #   id: cpr
