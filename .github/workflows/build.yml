@@ -83,9 +83,10 @@ jobs:
         uses: mikefarah/yq@v4.9.6
         with:
           cmd: |
-            echo ${env.TAG}
-            yq e --inplace '.apps.front.image.tag = "${{ env.TAG }}"' myapp/values.yaml 
-            yq e --inplace '.apps.server.image.tag = "${{ env.TAG }}"' myapp/values.yaml
+            echo $TAG
+            echo ${{ steps.image.outputs.version }}
+            yq e --inplace '.apps.front.image.tag = $TAG' myapp/values.yaml 
+            yq e --inplace '.apps.server.image.tag = "${{ steps.image.outputs.version }}"' myapp/values.yaml
 
       # - name: Create Pull Request
       #   id: cpr
