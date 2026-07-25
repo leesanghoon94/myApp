@@ -34,7 +34,7 @@ jobs:
           echo VERSION=$VERSION
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: build,tag,and push image to docker hub
+      - name: 프론트이미지 빌드 푸시
         id: front_image
         env:
           TAG: ${{ steps.image.outputs.version }}
@@ -47,7 +47,7 @@ jobs:
           docker build -t $DOCKERID/front-eks:$TAG . 
           docker push $DOCKERID/front-eks:$TAG
 
-      - name: build,tag,and push image to docker hub
+      - name: 서버 이미지 빌드 푸시
         id: server_image
         env:
           TAG: ${{ steps.image.outputs.version }}
@@ -91,7 +91,6 @@ jobs:
             yq e --inplace '.apps.front.image.tag = "${{ needs.build.outputs.image_tag }}"' myapp/values.yaml 
             yq e --inplace '.apps.server.image.tag = "${{ needs.build.outputs.image_tag }}"' myapp/values.yaml
             echo "===== 변경 결과 ====="
-            cat myapp/values.yaml
             cat myapp/values.yaml
 
       - name: Check changed files
