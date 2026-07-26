@@ -17,7 +17,7 @@ apps:
     image:
       repository: leesanghoon94/front-eks
       # Overrides the image tag whose default is the latest.
-      tag: "04cba"
+      tag: "5b1b4"
   server:
     enabled: true
     autoscaling:
@@ -36,8 +36,7 @@ apps:
     image:
       repository: leesanghoon94/server-eks
       # Overrides the image tag whose default is the latest.
-      tag: "04cba"
+      tag: "5b1b4"
 mysql: true
-
 ingress:
   subnets: subnet-0add9a61b431a9ed4, subnet-08ceb20659e0c6579
