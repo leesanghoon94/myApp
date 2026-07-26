@@ -8,6 +8,9 @@ metadata:
   #   - include "" . | nindent 4 
 spec:
   scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ $name }}
   minReplicas: {{ $app.autoscaling.minReplicas }}
   maxReplicas: {{ $app.autoscaling.maxReplicas }}
   metrics:
