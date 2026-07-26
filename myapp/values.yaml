@@ -39,4 +39,4 @@ apps:
       tag: "628c7"
 mysql: true
 ingress:
-  subnets: subnet-0add9a61b431a9ed4, subnet-08ceb20659e0c6579
+  subnets: subnet-012efc65ee06d256b, subnet-0e7852073febed00f
