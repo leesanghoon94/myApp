@@ -86,25 +86,28 @@ jobs:
         uses: mikefarah/yq@master
         with:
           cmd: |
-
-            echo ${{ needs.build.outputs.image_tag }}
-
             yq e --inplace '.apps.front.image.tag = "${{ needs.build.outputs.image_tag }}"' myapp/values.yaml 
             yq e --inplace '.apps.server.image.tag = "${{ needs.build.outputs.image_tag }}"' myapp/values.yaml
-            echo "===== 변경 결과 ====="
-            cat myapp/values.yaml
 
-      - name: Check changed files
+      - name: 바뀐 파일 보기
         run: |
           git diff -- myapp/values.yaml
 
-      - name: Commit and Push
+      - name: 바뀐 values.yml 깃커밋 푸시
         run: |
           git config user.name "leesanghoon94"
           git config user.email "isupperhoon@gmail.com"
           git add myapp/values.yaml
-          git commit -m "chore: update image tag to ${{ steps.image.outputs.version }}" || echo "No changes"
+          git commit -m "chore: update image tag to ${{ needs.build.outputs.image_tag }}" || echo "No changes"
           git push
+
+      # - name: Setup Helm
+      #   uses: azure/setup-helm@v4
+
+      # - name: 헬름 작업
+      #   run: |
+      #     helm lint myapp
+      #     helm package myapp
 
       # - name: Create Pull Request
       #   id: cpr

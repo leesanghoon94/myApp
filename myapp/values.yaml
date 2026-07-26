@@ -38,5 +38,6 @@ apps:
       # Overrides the image tag whose default is the latest.
       tag: "04cba"
 mysql: true
+
 ingress:
-  subnets: subnet-007271349f0e2738e, subnet-098629dccf8a81003
+  subnets: subnet-0add9a61b431a9ed4, subnet-08ceb20659e0c6579
