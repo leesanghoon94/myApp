@@ -1,5 +1,5 @@
 export function create(data) {
-  return fetch("/api/article", {
+  return fetch("http://localhost:3333/api/article", {
     method: "POST",
     mode: "cors",
     headers: {

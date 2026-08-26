@@ -10,6 +10,7 @@ const {
   responesTimeHistogram,
   errorCount,
   dbQueryDuration,
+  httpRequestsTotal,
 } = require("./metrics");
 
 app.use(cors());
@@ -25,7 +26,11 @@ app.use((req, res, next) => {
     responesTimeHistogram
       .labels(req.method, req.path, res.statusCode)
       .observe(durationInSeconds);
-
+    httpRequestsTotal.inc({
+      method: req.method,
+      route: req.route?.path || req.path,
+      status_code: res.statusCode,
+    });
     if (res.statusCode >= 400) {
       errorCount.inc({
         method: req.method,

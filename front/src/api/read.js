@@ -1,6 +1,6 @@
 export function readAll() {
   return () =>
-    fetch(`/api/article`)
+    fetch(`http://localhost:3333/api/article`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -12,5 +12,6 @@ export function readAll() {
 }
 
 export function readOne(id) {
-  return () => fetch(`/api/article/${id}`).then((res) => res.json());
+  return () =>
+    fetch(`http://localhost:3333/api/article/${id}`).then((res) => res.json());
 }

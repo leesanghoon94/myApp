@@ -27,11 +27,13 @@ scrape_configs:
 
     static_configs:
       - targets: ["localhost:9090"]
-       # The label name is added as a label `label_name=<label_value>` to any timeseries scraped from this config.
+        # The label name is added as a label `label_name=<label_value>` to any timeseries scraped from this config.
         labels:
           app: "prometheus"
 
-  - job_name: 'myapp'
+  - job_name: "myapp"
+    metrics_path: "/api/metrics"
     static_configs:
-      - targets: ["host.docker.internal:3333"]
+      - targets: ["server:3333"]
+
 #host.docker.internal

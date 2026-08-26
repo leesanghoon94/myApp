@@ -6,9 +6,9 @@ const dbConf = {
   port: "3306",
   database: "article1",
   password: "12345678",
-}
+};
 
-let db
+let db;
 
 function handleDisconnect() {
   db = mysql.createConnection(dbConf);

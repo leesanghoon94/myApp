@@ -1,37 +1,44 @@
-const client = require('prom-client')
-const register = new client.Registry()
-client.collectDefaultMetrics({ register })
+const client = require("prom-client");
+const register = new client.Registry();
+client.collectDefaultMetrics({ register });
 
 const requestCounter = new client.Counter({
-    name: 'request_count',
-    help: 'Total number of requests',
-    labelNames: ['method', 'route'],
-})
+  name: "request_count",
+  help: "Total number of requests",
+  labelNames: ["method", "route"],
+});
 const responesTimeHistogram = new client.Histogram({
-    name: 'request_duration_seconds',
-    help: 'Duration of http requests',
-    labelNames: ['method', 'route', 'status_code'],
-    buckets: [0.1, 0.3, 0.5, 1, 2, 3, 5]
-})
+  name: "request_duration_seconds",
+  help: "Duration of http requests",
+  labelNames: ["method", "route", "status_code"],
+  buckets: [0.1, 0.3, 0.5, 1, 2, 3, 5],
+});
 const errorCount = new client.Counter({
-    name: 'http_request_errors_total',
-    help: 'Total number of failed HTTP requests',
-    labelNames: ['method', 'route', 'status_code']
-})
+  name: "http_request_errors_total",
+  help: "Total number of failed HTTP requests",
+  labelNames: ["method", "route", "status_code"],
+});
 const dbQueryDuration = new client.Histogram({
-    name: 'db_query_duration_seconds',
-    help: 'DB query latency in seconds',
-    labelNames: ['query']
-})
+  name: "db_query_duration_seconds",
+  help: "DB query latency in seconds",
+  labelNames: ["query"],
+});
+const httpRequestsTotal = new client.Counter({
+  name: "http_requests_total",
+  help: "Total number of HTTP requests",
+  labelNames: ["method", "route", "status_code"],
+});
+register.registerMetric(requestCounter);
+register.registerMetric(responesTimeHistogram);
+register.registerMetric(errorCount);
+register.registerMetric(dbQueryDuration);
+register.registerMetric(httpRequestsTotal);
 
-register.registerMetric(requestCounter)
-register.registerMetric(responesTimeHistogram)
-register.registerMetric(errorCount)
-register.registerMetric(dbQueryDuration)
 module.exports = {
-    register,
-    requestCounter,
-    responesTimeHistogram,
-    errorCount,
-    dbQueryDuration
-}
+  register,
+  requestCounter,
+  responesTimeHistogram,
+  errorCount,
+  dbQueryDuration,
+  httpRequestsTotal,
+};
