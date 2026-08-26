@@ -31,6 +31,7 @@ spec:
           labelSelector:
             matchLabels:
               app: front
+      terminationGracePeriodSeconds: 30
       containers:
       - name: front
         image: {{ .Values.apps.front.image.repository }}:{{ .Values.apps.front.image.tag | default "latest" }} #leesanghoon94/front-local:v0.0.7
@@ -45,7 +46,7 @@ spec:
           initialDelaySeconds: 10
           periodSeconds: 10
           failureThreshold: 1
-          terminationGracePeriodSeconds: 30
+
 
         readinessProbe:
           httpGet:
