@@ -15,7 +15,7 @@ kind: Deployment
 metadata:
   name: server
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: server
@@ -42,8 +42,8 @@ spec:
             httpGet:
               path: /
               port: 3333
-            initialDelaySeconds: 10
-            failureThreshold: 1
+            initialDelaySeconds: 20
+            failureThreshold: 2
             periodSeconds: 10
             
           readinessProbe:
