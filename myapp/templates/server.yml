@@ -40,19 +40,19 @@ spec:
             - containerPort: 3333
           livenessProbe:
             httpGet:
-              path: /
+              path: /health
               port: 3333
-            initialDelaySeconds: 20
-            failureThreshold: 2
-            periodSeconds: 10
+            initialDelaySeconds: 30
+            failureThreshold: 3
+            periodSeconds: 20
             
           readinessProbe:
             httpGet:
-              path: /
+              path: /health
               port: 3333
-            initialDelaySeconds: 10
-            periodSeconds: 10
-            failureThreshold: 1
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            failureThreshold: 3
             
             
           resources:

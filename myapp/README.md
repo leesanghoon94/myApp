@@ -1,7 +1,5 @@
 hpa 구현
-hpa 사용할때 메트릭서버 필요
-
-매니페스트로 배포
+hpa 사용할때 메트릭서버 필요 매니페스트로 배포
 
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 
@@ -115,21 +113,6 @@ i-0686b6942a114a7bb pri a
 i-0aea25c954eb9a9cd subnet-0ce91c9f4b12f9ead pri c
 
 수정이안되는데 api 실패
-
-게시판
-취소
-글 수정
-...
-본문
-...
-
-...
-
-...
-
-글 수정
-
----
 
 helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
 

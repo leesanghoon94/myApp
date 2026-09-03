@@ -24,6 +24,19 @@ spec:
       labels:
         app: front
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - front
+                topologyKey: kubernetes.io/hostname
+                
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
@@ -45,7 +58,7 @@ spec:
             port: 80
           initialDelaySeconds: 10
           periodSeconds: 10
-          failureThreshold: 1
+          failureThreshold: 3
 
 
         readinessProbe:
@@ -54,7 +67,7 @@ spec:
             port: 80
           initialDelaySeconds: 10
           periodSeconds: 10
-          failureThreshold: 1
+          failureThreshold: 3
           
 
         resources:
