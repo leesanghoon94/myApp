@@ -17,7 +17,7 @@ apps:
     image:
       repository: leesanghoon94/front-eks
       # Overrides the image tag whose default is the latest.
-      tag: "c696f"
+      tag: "67d66"
   server:
     enabled: true
     autoscaling:
@@ -33,11 +33,10 @@ apps:
       limits:
         cpu: 500m
         memory: 512Mi
-
     image:
       repository: leesanghoon94/server-eks
       # Overrides the image tag whose default is the latest.
-      tag: "c696f"
+      tag: "67d66"
 mysql: true
 ingress:
   subnets: subnet-012efc65ee06d256b, subnet-0e7852073febed00f
