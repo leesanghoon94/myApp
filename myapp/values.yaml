@@ -17,7 +17,7 @@ apps:
     image:
       repository: leesanghoon94/front-eks
       # Overrides the image tag whose default is the latest.
-      tag: "ff7db"
+      tag: "41eba"
   server:
     enabled: true
     autoscaling:
@@ -36,7 +36,7 @@ apps:
     image:
       repository: leesanghoon94/server-eks
       # Overrides the image tag whose default is the latest.
-      tag: "ff7db"
+      tag: "41eba"
 mysql: true
 ingress:
   subnets: subnet-012efc65ee06d256b, subnet-0e7852073febed00f
