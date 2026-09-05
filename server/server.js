@@ -51,11 +51,13 @@ app.get("/api/metrics", async (req, res) => {
 app.get("/api", (req, res) => {
   res.send({ root: true });
 });
+
 app.get("/health", (req, res) => {
   res.status(200).json({
     status: "ok",
   });
 });
+
 app.get("/api/article", (req, res) => {
   const start = process.hrtime();
   db.query("select * from articles;", (err, result) => {
