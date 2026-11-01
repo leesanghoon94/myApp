@@ -116,7 +116,7 @@ jobs:
       #     cmd: |
       #       helm lint .
       #       helm package .
-      #       helm index . https://leesanghoon94/myApp
+      #       helm index . https://leesanghoon94.github.io/myApp
 
       #     token: ${{ env.GIT_ACCESS_TOKEN }}
       #     commit-message: "deploy: myapp-${{ env.HASH }}"
