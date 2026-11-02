@@ -8,7 +8,7 @@
       
   "containerDefinitions": [
     {
-      "name": "server",
+      "name": "back",
       "image": "<IMAGE2_NAME>",
       "essential": true,
       "portMappings": [
