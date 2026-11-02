@@ -1,8 +1,8 @@
 {
   "family": "front_task_definition",
   "networkMode": "bridge",
-  "cpu": 256,
-  "memory": 512,
+  "cpu": "256",
+  "memory": "512",
   
   "executionRoleArn": "arn:aws:iam::650251731474:role/service-role/ecsTaskExecutionRole",
       
